@@ -27,7 +27,7 @@ export default function Onboarding() {
         <View style={styles.container}>
             <View style={styles.innerContainer}>
                 <View style={{ alignSelf: 'flex-end', marginRight: 48, marginBottom: 128 }}>
-                    <Text style={{ fontSize: 16, color: '#666' }}>Skip</Text>
+                    <Text style={{ fontSize: 16, color: '#64748B' }}>Skip</Text>
                 </View>
                 <View>
                     <Image source={currentStep.image_path} />
@@ -36,21 +36,33 @@ export default function Onboarding() {
                     <Text style={{ fontSize: 32, fontWeight: 'bold', textAlign: 'center', }}>{currentStep.title}</Text>
                     <Text style={{ fontSize: 16, textAlign: 'center', marginVertical: 8, color: '#666', lineHeight: 32 }}>{currentStep.description}</Text>
                 </View>
-                <View>
+                <View style={{ width: '100%' }}>
                     <StepIndicator
                         currentPosition={currentPosition}
                         stepCount={steps.length}
                         customStyles={{
-                            stepIndicatorSize: 8,
-                            currentStepIndicatorSize: 8,
-                            separatorStrokeWidth: 0,
+                            stepIndicatorSize: 7,
+                            currentStepIndicatorSize: 7,
+
                             stepStrokeWidth: 0,
-                            stepIndicatorFinishedColor: "#D9D9E8",
-                            stepIndicatorUnFinishedColor: "#D9D9E8",
+                            currentStepStrokeWidth: 0,
+
+                            stepIndicatorFinishedColor: "#DDE2EC",
+                            stepIndicatorUnFinishedColor: "#DDE2EC",
                             stepIndicatorCurrentColor: "#4F46E5",
-                            separatorFinishedColor: "#D9D9E8",
-                            separatorUnFinishedColor: "#D9D9E8",
+
+                            separatorStrokeWidth: 0,
+                            separatorStrokeUnfinishedWidth: 0,
+                            separatorStrokeFinishedWidth: 0,
+
+                            stepIndicatorLabelFontSize: 1,
+                            currentStepIndicatorLabelFontSize: 1,
+
+                            stepIndicatorLabelCurrentColor: "transparent",
+                            stepIndicatorLabelFinishedColor: "transparent",
+                            stepIndicatorLabelUnFinishedColor: "transparent",
                         }}
+                        onPress={(position) => {setCurrentPosition(position)}}
                     />
                     <Pressable 
                         onPress={() => {
@@ -58,7 +70,7 @@ export default function Onboarding() {
                             setCurrentPosition(currentPosition + 1);
                         }
                     }}
-                    style={{ backgroundColor: '#4F46E5', borderWidth: 1, borderRadius: 12, borderColor: '#4F46E5', paddingHorizontal: 128, paddingVertical: 16, marginTop: 32 }}>
+                    style={{ backgroundColor: '#4F46E5', borderWidth: 1, borderRadius: 12, borderColor: '#4F46E5', paddingHorizontal: 128, paddingVertical: 16, marginTop: 32, width: '100%' }}>
                         <Text style={{ fontSize: 16, color: '#fff', textAlign: 'center', fontWeight: 'bold' }}>{currentPosition === 0 ? 'Get Started' : 'Next'}</Text>
                     </Pressable>
                 </View>
