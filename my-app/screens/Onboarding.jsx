@@ -2,7 +2,7 @@ import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
 import { useState } from 'react';
 import StepIndicator from 'react-native-step-indicator';
 
-export default function Onboarding() {
+export default function Onboarding({ navigation }) {
     const [currentPosition, setCurrentPosition] = useState(0);
     const steps = [
         { 
@@ -34,7 +34,7 @@ export default function Onboarding() {
                 </View>
                 <View style={{ marginTop: 64, marginHorizontal: 64, marginBottom: 48 }}>
                     <Text style={{ fontSize: 32, fontWeight: 'bold', textAlign: 'center', }}>{currentStep.title}</Text>
-                    <Text style={{ fontSize: 16, textAlign: 'center', marginVertical: 8, color: '#666', lineHeight: 32 }}>{currentStep.description}</Text>
+                    <Text style={{ fontSize: 16, textAlign: 'center', marginVertical: 8, color: '#64748B', lineHeight: 32 }}>{currentStep.description}</Text>
                 </View>
                 <View style={{ width: '100%' }}>
                     <StepIndicator
@@ -68,10 +68,12 @@ export default function Onboarding() {
                         onPress={() => {
                         if (currentPosition < steps.length - 1) {
                             setCurrentPosition(currentPosition + 1);
+                        } else {
+                            navigation.navigate('SignUp');
                         }
                     }}
                     style={{ backgroundColor: '#4F46E5', borderWidth: 1, borderRadius: 12, borderColor: '#4F46E5', paddingHorizontal: 128, paddingVertical: 16, marginTop: 32, width: '100%' }}>
-                        <Text style={{ fontSize: 16, color: '#fff', textAlign: 'center', fontWeight: 'bold' }}>{currentPosition === 0 ? 'Get Started' : 'Next'}</Text>
+                        <Text style={{ fontSize: 16, color: '#fff', textAlign: 'center', fontWeight: 'bold' }}>{currentPosition === 0 ? 'Get Started' : '     Next     '}</Text>
                     </Pressable>
                 </View>
             </View>
