@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import SplashScreen from './screens/SplashScreen';
 import Onboarding from './screens/Onboarding';
 import SignUp from './screens/SignUp';
+import Login from './screens/Login'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -32,6 +33,7 @@ export default function App() {
           <>
             <Stack.Screen name="Onboarding" component={Onboarding} />
             <Stack.Screen name="SignUp" component={SignUp} />
+            <Stack.Screen name='Login' component={Login} />
           </>
         )}
       </Stack.Navigator>

@@ -1,7 +1,7 @@
 import { View, Text, TextInput, Pressable, ScrollView, StyleSheet, Image } from 'react-native';
 
 
-export default function SignUp() {
+export default function SignUp({ navigation }) {
     return (
         <View style={styles.container}>
             <View style={styles.innerContainer}>
@@ -66,7 +66,11 @@ export default function SignUp() {
                     </View>
                     <View style={{flexDirection: 'row', gap: 8, justifyContent: 'center', marginBottom: 32}}>
                         <Text style={{color: '#64748B'}}>Already have an account?</Text>
-                        <Text style={{color: '#4F46E5', fontWeight: 'bold'}}>Login</Text>
+                        <Pressable onPress={() => {
+                            navigation.navigate('Login')
+                        }}>
+                            <Text style={{color: '#4F46E5', fontWeight: 'bold'}}>Login</Text>
+                        </Pressable>
                     </View>
                 </ScrollView>
             </View>
