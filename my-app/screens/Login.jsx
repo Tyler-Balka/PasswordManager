@@ -48,8 +48,19 @@ export default function Login() {
                     <Text style={{color: '#64748B', fontWeight: 'bold'}}>OR</Text>
                     <View style={{borderWidth: 1, borderColor: '#E2E8F0', flex: 1}}></View>
                 </View>
-                <View>
-                   
+                <View style={{flexDirection: 'row', gap: 16, justifyContent: 'center'}}>
+                   <View style={{flexDirection: 'row', gap: 8, borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 12, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 42, paddingVertical: 14}}>
+                        <Image source={require('../assets/google.png')} style={{width: 20, height: 20}}/>
+                        <Text>Google</Text>
+                   </View>
+                    <View style={{flexDirection: 'row', gap: 8, borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 12, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 42, paddingVertical: 14}}>
+                        <Image source={require('../assets/apple-logo.png')} style={{width: 20, height: 20}}/>
+                        <Text>Apple</Text>
+                    </View>
+                </View>
+                <View style={{flexDirection: 'row', gap: 4, justifyContent: 'center', marginTop: 16}}>
+                    <Text style={{color: '#64748B'}}>Don't have an account?</Text>
+                    <Pressable><Text style={{color: '#4F46E5', fontWeight: 'bold'}}>Sign Up</Text></Pressable>
                 </View>
             </View>
         </View>
