@@ -1,12 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { useState, useEffect } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from './screens/SplashScreen';
 import Onboarding from './screens/Onboarding';
 import SignUp from './screens/SignUp';
 import Login from './screens/Login'
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Vault from './screens/Vault';
 
 const Stack = createNativeStackNavigator();
 
@@ -34,6 +35,7 @@ export default function App() {
             <Stack.Screen name="Onboarding" component={Onboarding} />
             <Stack.Screen name="SignUp" component={SignUp} />
             <Stack.Screen name='Login' component={Login} />
+            <Stack.Screen name='Vault' component={Vault} />
           </>
         )}
       </Stack.Navigator>

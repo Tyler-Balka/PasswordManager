@@ -1,7 +1,38 @@
 import { View, Text, TextInput, Pressable, ScrollView, StyleSheet, Image } from 'react-native';
+import React from 'react'
 
 
 export default function SignUp({ navigation }) {
+    const [fullName, setFullName] = React.useState('')
+    const [email, setEmail] = React.useState('')
+    const [password, setPassword] = React.useState('')
+
+
+    const signUp = async () => {
+        try {
+            const response = await fetch('http://10.1.10.242:3000/api/sign-up', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    fullName: fullName,
+                    email: email,
+                    password: password
+                })
+            })
+
+            const data = await response.json()
+            if (response.ok) {
+                navigation.navigate('Vault')
+            } else {
+                console.log('Sign-up failed:', data)
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.innerContainer}>
@@ -34,21 +65,21 @@ export default function SignUp({ navigation }) {
                         <Text style={{color: '#0F172A', fontWeight: 'bold'}}>Full Name</Text>
                         <View style={{borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 12, padding: 16, flexDirection: 'row', gap: 8, alignItems: 'center'}}>
                             <Image source={require('../assets/person-icon.png')} style={{width: 13.33, height: 13.33}}></Image>
-                            <TextInput multiline={false} keyboardType='default' autoCapitalize='words' placeholder='John Doe'></TextInput>
+                            <TextInput multiline={false} keyboardType='default' autoCapitalize='words' placeholder='John Doe' value={fullName} onChangeText={setFullName}></TextInput>
                         </View>
                     </View>
                     <View style={{marginHorizontal: 32, flexDirection: 'column', gap: 8}}>
                         <Text style={{color: '#0F172A', fontWeight: 'bold'}}>Email Address</Text>
                         <View style={{borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 12, padding: 16, flexDirection: 'row', gap: 8, alignItems: 'center'}}>
                             <Image source={require('../assets/email-icon.png')} style={{width: 16.67, height: 13.33}}></Image>
-                            <TextInput multiline={false} keyboardType='email-address' placeholder='name@example.com'></TextInput>
+                            <TextInput multiline={false} keyboardType='email-address' placeholder='name@example.com' value={email} onChangeText={setEmail}></TextInput>
                         </View>
                     </View>
                      <View style={{margin: 32, flexDirection: 'column', gap: 8}}>
                         <Text style={{color: '#0F172A', fontWeight: 'bold'}}>Password</Text>
                         <View style={{borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 12, padding: 16, flexDirection: 'row', gap: 8, alignItems: 'center'}}>
                             <Image source={require('../assets/lock-icon.png')} style={{width: 13.33, height: 17.5}}></Image>
-                            <TextInput multiline={false} keyboardType='default' placeholder='password' secureTextEntry={true}></TextInput>
+                            <TextInput multiline={false} keyboardType='default' placeholder='password' secureTextEntry={true} value={password} onChangeText={setPassword}></TextInput>
                             {/* Logic to determine how strong password is, goes here */}
                         </View>
                     </View>
@@ -56,11 +87,13 @@ export default function SignUp({ navigation }) {
                         <Text style={{color: '#0F172A', fontWeight: 'bold'}}>Confirm Password</Text>
                         <View style={{borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 12, padding: 16, flexDirection: 'row', gap: 8, alignItems: 'center',}}>
                             <Image source={require('../assets/password-icon.png')} style={{width: 16.67, height: 16.67}}></Image>
-                            <TextInput multiline={false} keyboardType='email-address' placeholder='confirm password'></TextInput>
+                            <TextInput multiline={false} keyboardType='default' placeholder='confirm password'></TextInput>
                         </View>
                     </View>
                     <View style={{margin: 32, justifyContent: 'center', alignItems: 'center',}}>
-                        <Pressable style={{backgroundColor: '#4F46E5', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 16, width: 315, height: 56}}>
+                        <Pressable 
+                            onPress={signUp}
+                            style={{backgroundColor: '#4F46E5', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 16, width: 315, height: 56}}>
                             <Text style={{color: 'white', fontWeight: 'bold', textAlign: 'center'}}>Create Account</Text>
                         </Pressable>
                     </View>

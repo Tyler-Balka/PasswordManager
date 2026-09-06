@@ -1,7 +1,39 @@
 import React from "react"
+import { useState } from 'react'
 import { View, Text, TextInput, Pressable, Image } from "react-native"
+import * as SecureStore from 'expo-secure-store'
 
-export default function Login() {
+export default function Login( {navigation} ) {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+
+    const login = async () => {
+        try {
+            const response = await fetch('http://10.1.10.242:3000/api/login', {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    'email': email,
+                    'password': password
+                })
+            })
+
+            if (response.ok) {
+                const data = await response.json()
+                const token = data.token
+                await SecureStore.setItemAsync('token', token)
+                navigation.navigate('Vault')
+            } else {
+                const errorData = await response.json()
+                console.log(errorData)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <View style={{flex: 1}}>
             <View style={{justifyContent: 'center', marginVertical: 113, marginHorizontal: 24, flexDirection: 'column', gap: 32}}>
@@ -19,7 +51,7 @@ export default function Login() {
                     <View style={{flexDirection: 'column', gap: 8}}>
                         <Text style={{color: '#0F172A', fontWeight: 'bold'}}>Email Address</Text>
                         <View style={{borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 12, paddingVertical: 18, paddingHorizontal: 16}}>
-                            <TextInput placeholder="name@company.com" />
+                            <TextInput placeholder="name@company.com" value={email} onChangeText={setEmail} />
                         </View>
                     </View>
                     <View style={{flexDirection: 'column', gap: 8}}>
@@ -28,12 +60,12 @@ export default function Login() {
                             <Text style={{color: '#4F46E5', fontWeight: 'bold'}}>Forgot Password?</Text>
                         </View>
                         <View style={{borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 12, paddingVertical: 18, paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center'}}>
-                            <TextInput placeholder="password" style={{flex: 1}} />
+                            <TextInput placeholder="password" value={password} onChangeText={setPassword} style={{flex: 1}} />
                             <Image source={require('../assets/eye-icon.png')} style={{width: 18.33, height: 12.5}}/>
                         </View>
                     </View>
                     <View style={{flexDirection: 'row', gap: 12, alignItems: 'center'}}>
-                        <Pressable style={{paddingVertical: 16, borderRadius: 12, backgroundColor: '#4F46E5', width: '85%', height: 56, justifyContent: 'center', alignItems: 'center'}}>
+                        <Pressable onPress={login} style={{paddingVertical: 16, borderRadius: 12, backgroundColor: '#4F46E5', width: '85%', height: 56, justifyContent: 'center', alignItems: 'center'}}>
                             <Text style={{color: 'white', fontWeight: 'bold'}}>Login</Text>
                         </Pressable>
                         <View style={{borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 12, justifyContent: 'center', alignItems: 'center', width: 56, height: 56}}>
@@ -60,7 +92,7 @@ export default function Login() {
                 </View>
                 <View style={{flexDirection: 'row', gap: 4, justifyContent: 'center', marginTop: 16}}>
                     <Text style={{color: '#64748B'}}>Don't have an account?</Text>
-                    <Pressable><Text style={{color: '#4F46E5', fontWeight: 'bold'}}>Sign Up</Text></Pressable>
+                    <Pressable onPress={() => navigation.navigate('SignUp')}><Text style={{color: '#4F46E5', fontWeight: 'bold'}}>Sign Up</Text></Pressable>
                 </View>
             </View>
         </View>
