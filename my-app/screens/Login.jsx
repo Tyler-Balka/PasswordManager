@@ -2,8 +2,12 @@ import React from "react"
 import { useState } from 'react'
 import { View, Text, TextInput, Pressable, Image } from "react-native"
 import * as SecureStore from 'expo-secure-store'
+import { useNavigation, useRoute } from "@react-navigation/native"
 
-export default function Login( {navigation} ) {
+export default function Login() {
+    const navigation = useNavigation()
+    const route = useRoute()
+
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
@@ -24,7 +28,7 @@ export default function Login( {navigation} ) {
                 const data = await response.json()
                 const token = data.token
                 await SecureStore.setItemAsync('token', token)
-                navigation.navigate('Vault')
+                navigation.navigate('Tabs')
             } else {
                 const errorData = await response.json()
                 console.log(errorData)

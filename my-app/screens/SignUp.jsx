@@ -24,7 +24,7 @@ export default function SignUp({ navigation }) {
 
             const data = await response.json()
             if (response.ok) {
-                navigation.navigate('Vault')
+                navigation.navigate('Tabs')
             } else {
                 console.log('Sign-up failed:', data)
             }
