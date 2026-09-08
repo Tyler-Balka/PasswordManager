@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, Pressable, Image, TextInput } from 'react-native'
 import * as SecureStore from 'expo-secure-store'
 import { useEffect, useState } from 'react'
 
@@ -41,9 +41,25 @@ export default function Vault() {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <View>
-                    <Text>{getTimeOfDay()}</Text>
-                    <Text>{userProfile?.fullName}</Text>
+                <View style={styles.headerContainer}>
+                    <View>
+                        <Text style={{ color: '#64748B', fontSize: 16 }}>{getTimeOfDay()}</Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 24, color: '#0F172A' }}>{userProfile?.fullName}</Text>
+                    </View>
+                    <Pressable style={{ width: 48, height: 48, backgroundColor: '#E2E8F0', borderRadius: 20, marginLeft: 'auto', justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ fontWeight: 'bold', fontSize: 18, color: '#0F172A' }}>{userProfile?.fullName?.[0]}</Text>
+                    </Pressable>
+                </View>
+                <View style={styles.body}>
+                    <View style={styles.searchContainer}>
+                        <View style={styles.searchInput}>
+                            <Image source={require('../assets/search-icon.png')} style={{ width: 15, height: 15 }} />
+                            <TextInput placeholder='Search vault...'/>
+                        </View>
+                        <Pressable style={{justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 24, padding: 12 }}>
+                            <Image source={require('../assets/filter-icon.png')} style={{ width: 18, height: 18 }} />
+                        </Pressable>
+                    </View>
                 </View>
             </View>
         </View>
@@ -57,5 +73,35 @@ const styles = StyleSheet.create({
     header: {
         width: '100%',
         height: 124
+    },
+    headerContainer: {
+        marginHorizontal: 24,
+        marginVertical: 16,
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingTop: 32,
+        paddingBottom: 24,
+        paddingRight: 24,
+    },
+    body: {
+        flex: 1,
+        marginHorizontal: 32,
+    },
+    searchContainer: {
+        flexDirection: 'row',
+        gap: 12,
+        paddingRight: 24,
+        width: 358,
+        height: 46
+    },
+    searchInput: {
+        borderWidth: 1,
+        borderColor: '#E2E8F0',
+        borderRadius: 24,
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '85%',
     }
 })
