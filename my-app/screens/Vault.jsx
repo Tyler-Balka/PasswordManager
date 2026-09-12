@@ -38,6 +38,8 @@ export default function Vault() {
         fetchUserProfile()
     }, [])
 
+    const [passwords, setPasswords] = useState([])
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>

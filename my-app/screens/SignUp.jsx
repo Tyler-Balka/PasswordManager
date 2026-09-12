@@ -1,11 +1,13 @@
 import { View, Text, TextInput, Pressable, ScrollView, StyleSheet, Image } from 'react-native';
 import React from 'react'
-
+import zxcvbn from 'zxcvbn';
+import { useEffect, useState } from 'react';
 
 export default function SignUp({ navigation }) {
     const [fullName, setFullName] = React.useState('')
     const [email, setEmail] = React.useState('')
     const [password, setPassword] = React.useState('')
+    const [score, setScore] = useState(0)
 
 
     const signUp = async () => {
@@ -30,6 +32,31 @@ export default function SignUp({ navigation }) {
             }
         } catch (error) {
             console.error(error)
+        }
+    }
+
+    // checks the strength of the user's password as the user is typing it
+    useEffect(() => {
+        const checkPasswordStrength = () => {
+            const checkPassword = zxcvbn(password)
+            const score = checkPassword.score
+            setScore(score)
+        }
+
+        checkPasswordStrength()
+    }, [password])
+
+    const getScore = (score) => {
+         if (score == 0) {
+            return 'Very Weak'
+        } else if (score == 1) {
+            return 'Weak'
+        } else if (score == 2) {
+            return 'Fair'
+        } else if (score == 3) {
+            return 'Strong'
+        } else {
+            return 'Very Strong'
         }
     }
 
@@ -80,7 +107,9 @@ export default function SignUp({ navigation }) {
                         <View style={{borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 12, padding: 16, flexDirection: 'row', gap: 8, alignItems: 'center'}}>
                             <Image source={require('../assets/lock-icon.png')} style={{width: 13.33, height: 17.5}}></Image>
                             <TextInput multiline={false} keyboardType='default' placeholder='password' secureTextEntry={true} value={password} onChangeText={setPassword}></TextInput>
-                            {/* Logic to determine how strong password is, goes here */}
+                        </View>
+                        <View>
+                            <Text>{getScore(score)}</Text>
                         </View>
                     </View>
                     <View style={{marginHorizontal: 32, flexDirection: 'column', gap: 8}}>

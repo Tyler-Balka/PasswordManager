@@ -14,7 +14,8 @@
     "react-native-paper": "^5.15.3",
     "react-native-safe-area-context": "~5.7.0",
     "react-native-screens": "~4.26.0",
-    "react-native-step-indicator": "^1.0.3"
+    "react-native-step-indicator": "^1.0.3",
+    "zxcvbn": "^4.4.2"
   },
   "scripts": {
     "start": "expo start",
