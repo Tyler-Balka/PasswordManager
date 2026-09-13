@@ -47,16 +47,44 @@ export default function SignUp({ navigation }) {
     }, [password])
 
     const getScore = (score) => {
-         if (score == 0) {
-            return 'Very Weak'
-        } else if (score == 1) {
-            return 'Weak'
+        if (score == 1) {
+            return <Text style={{color: '#EF4444', fontWeight: '300', marginTop: 4, marginBottom: 6, marginLeft: 8}}>Weak</Text>
         } else if (score == 2) {
-            return 'Fair'
+            return <Text style={{color: '#FACC15', fontWeight: '500', marginTop: 4, marginBottom: 6, marginLeft: 8}}>Fair</Text>
         } else if (score == 3) {
-            return 'Strong'
+            return <Text style={{color: '#86EFAC', fontWeight: '700', marginTop: 4, marginBottom: 6, marginLeft: 8}}>Strong</Text>
+        } else if (score == 4) {
+            return <Text style={{color: '#22C55E', fontWeight: 'bold', marginTop: 4, marginBottom: 6, marginLeft: 8}}>Very Strong</Text>
         } else {
-            return 'Very Strong'
+            return
+        }
+    }
+
+    const renderScore = (score) => {
+        if (score == 1) {
+            return <View style={{marginLeft: 8}}>
+                <View style={{borderRadius: 9999, width: 68.5, height: 6, backgroundColor: '#EF4444'}}></View>
+            </View>
+        } else if (score == 2) {
+            return <View style={{flexDirection: 'row', gap: 8, marginLeft: 8}}>
+                <View style={{borderRadius: 9999, width: 68.5, height: 6, backgroundColor: '#FACC15'}}></View>
+                <View style={{borderRadius: 9999, width: 68.5, height: 6, backgroundColor: '#FACC15'}}></View>
+            </View>
+        } else if (score == 3) {
+            return <View style={{flexDirection: 'row', gap: 8, marginLeft: 8}}>
+                <View style={{borderRadius: 9999, width: 68.5, height: 6, backgroundColor: '#86EFAC'}}></View>
+                <View style={{borderRadius: 9999, width: 68.5, height: 6, backgroundColor: '#86EFAC'}}></View>
+                <View style={{borderRadius: 9999, width: 68.5, height: 6, backgroundColor: '#86EFAC'}}></View>
+            </View>
+        } else if (score == 4) {
+            return <View style={{flexDirection: 'row', gap: 8, marginLeft: 8}}>
+                <View style={{borderRadius: 9999, width: 68.5, height: 6, backgroundColor: '#22C55E'}}></View>
+                <View style={{borderRadius: 9999, width: 68.5, height: 6, backgroundColor: '#22C55E'}}></View>
+                <View style={{borderRadius: 9999, width: 68.5, height: 6, backgroundColor: '#22C55E'}}></View>
+                <View style={{borderRadius: 9999, width: 68.5, height: 6, backgroundColor: '#22C55E'}}></View>
+            </View>
+        } else {
+            return <View></View>
         }
     }
 
@@ -109,7 +137,8 @@ export default function SignUp({ navigation }) {
                             <TextInput multiline={false} keyboardType='default' placeholder='password' secureTextEntry={true} value={password} onChangeText={setPassword}></TextInput>
                         </View>
                         <View>
-                            <Text>{getScore(score)}</Text>
+                            {getScore(score)}
+                            {renderScore(score)}
                         </View>
                     </View>
                     <View style={{marginHorizontal: 32, flexDirection: 'column', gap: 8}}>
