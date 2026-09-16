@@ -12,6 +12,7 @@ import Vault from './screens/Vault';
 import Generator from './screens/Generator';
 import Security from './screens/Security';
 import Settings from './screens/Settings';
+import AddPassword from './screens/AddPassword';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator()
@@ -47,6 +48,10 @@ export default function App() {
             <Stack.Screen name="Onboarding" component={Onboarding} />
             <Stack.Screen name="SignUp" component={SignUp} />
             <Stack.Screen name='Login' component={Login} />
+            <Stack.Screen name='AddPassword' component={AddPassword} options={{
+              headerShown: true, 
+              headerTitle: 'Add New Password',
+              presentation: 'modal'}} />
             <Stack.Screen name='Tabs' children={() => {
               return (
                 <Tab.Navigator screenOptions={({ route }) => {
@@ -94,7 +99,6 @@ export default function App() {
                   <Tab.Screen name='Generator' component={Generator}/>
                   <Tab.Screen name='Security' component={Security}/>
                   <Tab.Screen name='Settings' component={Settings}/>
-
                 </Tab.Navigator>
               );
             }} />

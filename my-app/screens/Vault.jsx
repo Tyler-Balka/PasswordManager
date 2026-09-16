@@ -1,8 +1,10 @@
 import { View, Text, StyleSheet, Pressable, Image, TextInput } from 'react-native'
 import * as SecureStore from 'expo-secure-store'
 import { useEffect, useState } from 'react'
+import { useNavigation } from '@react-navigation/native'
 
 export default function Vault() {
+    const navigation = useNavigation()
     const getTimeOfDay = () => {
         const date = new Date()
         if (date.getHours() > 0 && date.getHours() < 12) {
@@ -67,7 +69,9 @@ export default function Vault() {
                         <Text style={{color: '#0F172A', fontSize: 24, fontWeight: 'bold', marginBottom: 12}}>Your Vault is empty</Text>
                         <Text style={{color: '#64748B', fontSize: 16}}>Start adding your first password</Text>
                         <Text style={{color: '#64748B', fontSize: 16}}>to keep it safe and accessible.</Text>
-                        <Pressable style={styles.button}>
+                        <Pressable 
+                            style={styles.button}
+                            onPress={() => navigation.navigate('AddPassword')}>
                             <Image source={require('../assets/plus-sign.png')} style={{width: 14, height: 14}}/>
                             <Text style={{color: '#fff', fontWeight: '500'}}>Add Password</Text>
                         </Pressable>
