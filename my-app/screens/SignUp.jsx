@@ -56,7 +56,7 @@ export default function SignUp({ navigation }) {
         } else if (score == 4) {
             return <Text style={{color: '#22C55E', fontWeight: 'bold', marginTop: 4, marginBottom: 6, marginLeft: 8}}>Very Strong</Text>
         } else {
-            return
+            return <Text style={{color: '#EF4444', fontWeight: '300', marginTop: 4, marginBottom: 6, marginLeft: 8}}>Weak</Text>
         }
     }
 
@@ -84,7 +84,9 @@ export default function SignUp({ navigation }) {
                 <View style={{borderRadius: 9999, width: 68.5, height: 6, backgroundColor: '#22C55E'}}></View>
             </View>
         } else {
-            return <View></View>
+            return <View style={{marginLeft: 8}}>
+                <View style={{borderRadius: 9999, width: 68.5, height: 6, backgroundColor: '#EF4444'}}></View>
+            </View>
         }
     }
 
