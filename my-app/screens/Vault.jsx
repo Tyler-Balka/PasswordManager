@@ -1,10 +1,11 @@
 import { View, Text, StyleSheet, Pressable, Image, TextInput } from 'react-native'
 import * as SecureStore from 'expo-secure-store'
 import { useEffect, useState } from 'react'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 
 export default function Vault() {
     const navigation = useNavigation()
+
     const getTimeOfDay = () => {
         const date = new Date()
         if (date.getHours() > 0 && date.getHours() < 12) {
@@ -40,7 +41,7 @@ export default function Vault() {
         fetchUserProfile()
     }, [])
 
-    const [passwords, setPasswords] = useState([])
+    const [hasPasswords, setHasPasswords] = useState(false)
 
     return (
         <View style={styles.container}>

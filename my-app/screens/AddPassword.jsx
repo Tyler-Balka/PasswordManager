@@ -1,6 +1,7 @@
 import { View, Text, TextInput, Pressable, StyleSheet, Image } from 'react-native'
 import { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
+import * as SecureStorage from 'expo-secure-store'
 import zxcvbn from 'zxcvbn'
 
 export default function AddPassword() {
@@ -8,6 +9,7 @@ export default function AddPassword() {
     const [url, setUrl] = useState('')
     const [emailUsed, setEmailUsed] = useState('')
     const [password, setPassword] = useState('')
+    const [notes, setNotes] = useState('')
     const [score, setScore] = useState(0)
 
     const navigation = useNavigation()
@@ -117,6 +119,33 @@ export default function AddPassword() {
         }
     ]
 
+    const sendPostRequest = async () => {
+        await SecureStorage.getItemAsync('token').then((token) => {
+            fetch('http://10.1.10.242:3000/api/profile/add-password', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    appName: appTitle,
+                    url: url,
+                    emailUsed: emailUsed,
+                    password: password,
+                    notes: notes
+                })
+            })
+        })
+            .then((response) => {
+                if (response.ok) {
+                    navigation.navigate('Tabs')
+                }
+            })
+            .catch((err) => {
+                console.log('There was an error making this request.')
+                console.error(err)
+            })
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.body}>
@@ -181,12 +210,14 @@ export default function AddPassword() {
                     <Text style={{color: '#0F172A', fontWeight: 'bold'}}>Notes</Text>
                     <View style={{borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 12, flexDirection: 'row', gap: 8, alignItems: 'baseline', padding: 8, paddingLeft: 16, width: 308, height: 98}}>
                         <Image source={require('../assets/notes-icon.png')} style={{width: 18, height: 18}}/>
-                        <TextInput placeholder='Add additional details...' multiline={true} style={{flex: 1}}/>
+                        <TextInput placeholder='Add additional details...' multiline={true} style={{flex: 1}} value={notes} onChangeText={setNotes}/>
                     </View>
                 </View>
             </View>
             <View style={styles.passwordContainer}>
-                <Pressable style={styles.saveButton}>
+                <Pressable 
+                    style={styles.saveButton}
+                    onPress={() => sendPostRequest()}>
                     <Text style={styles.saveButtonText}>Save Password</Text>
                 </Pressable>
                 <Pressable onPress={() => {navigation.goBack()}}>
