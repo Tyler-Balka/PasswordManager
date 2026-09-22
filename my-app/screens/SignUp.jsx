@@ -2,6 +2,7 @@ import { View, Text, TextInput, Pressable, ScrollView, StyleSheet, Image } from 
 import React from 'react'
 import zxcvbn from 'zxcvbn';
 import { useEffect, useState } from 'react';
+import * as SecureStore from 'expo-secure-store'
 
 export default function SignUp({ navigation }) {
     const [fullName, setFullName] = React.useState('')
@@ -26,6 +27,7 @@ export default function SignUp({ navigation }) {
 
             const data = await response.json()
             if (response.ok) {
+                await SecureStore.setItemAsync('token', data.token)
                 navigation.navigate('Tabs')
             } else {
                 console.log('Sign-up failed:', data)

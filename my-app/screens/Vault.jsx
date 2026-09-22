@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable, Image, TextInput } from 'react-native'
+import { View, Text, StyleSheet, Pressable, Image, TextInput, ScrollView } from 'react-native'
 import * as SecureStore from 'expo-secure-store'
 import { useEffect, useState } from 'react'
 import { useNavigation, useRoute } from '@react-navigation/native'
@@ -42,6 +42,36 @@ export default function Vault() {
     }, [])
 
     const [hasPasswords, setHasPasswords] = useState(false)
+    const [data, setData] = useState([])
+    useEffect(() => {
+        const fetchPasswordInfo = async () => {
+            await SecureStore.getItemAsync('token').then((token) => {
+                return fetch('http://10.1.10.242:3000/api/profile/retrieve', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }})
+         }).then(async (response) => {
+            if (response.ok) {
+                let responseData = (await response.json()).data
+                if (responseData && !Array.isArray(responseData)) {
+                    responseData = [responseData]
+                }
+                setData(responseData)
+                setHasPasswords(responseData.length > 0)
+                console.log(hasPasswords)
+                console.log(responseData)
+            } else {
+                const err = await response.json()
+                console.error(err)
+            }
+         }).catch((err) => {
+            console.error(err)
+         })
+        }
+
+        fetchPasswordInfo()
+    }, [])
 
     return (
         <View style={styles.container}>
@@ -65,6 +95,23 @@ export default function Vault() {
                             <Image source={require('../assets/filter-icon.png')} style={{ width: 18, height: 18 }} />
                         </Pressable>
                     </View>
+                    {hasPasswords ? 
+                    <View>
+                        <ScrollView>
+                            {data.map((item, index) => (
+                                <View key={index} style={{ marginBottom: 12, borderRadius: 24, backgroundColor: '#FFF', padding: 16 }}>
+                                    <Text style={{ color: '#0F172A', fontSize: 16, fontWeight: 'bold' }}>{item.appName}</Text>
+                                    <Text style={{ color: '#64748B', fontSize: 14 }}>{item.emailUsed}</Text>
+                                </View>
+                            ))}
+                        </ScrollView>
+                        <Pressable 
+                            style={{backgroundColor: '#4F46E5', alignItems: 'center', justifyContent: 'center', borderRadius: 9999, width: 56, height: 56, position: 'absolute', top: 535, left: 300}}
+                            onPress={() => navigation.navigate('AddPassword')}>
+                            <Image source={require('../assets/plus-sign.png')} style={{width: 18.67, height: 18.67}}/>
+                        </Pressable>
+                    </View> 
+                    : 
                     <View style={styles.bodyContainer}>
                         <Image source={require('../assets/security-logo.png')} style={{width: 256, height: 256, marginBottom: 40}} />
                         <Text style={{color: '#0F172A', fontSize: 24, fontWeight: 'bold', marginBottom: 12}}>Your Vault is empty</Text>
@@ -76,7 +123,7 @@ export default function Vault() {
                             <Image source={require('../assets/plus-sign.png')} style={{width: 14, height: 14}}/>
                             <Text style={{color: '#fff', fontWeight: '500'}}>Add Password</Text>
                         </Pressable>
-                    </View>
+                    </View>}
                 </View>
             </View>
         </View>

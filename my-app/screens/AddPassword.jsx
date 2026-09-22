@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Pressable, StyleSheet, Image } from 'react-native'
+import { Alert, View, Text, TextInput, Pressable, StyleSheet, Image } from 'react-native'
 import { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import * as SecureStorage from 'expo-secure-store'
@@ -120,30 +120,31 @@ export default function AddPassword() {
     ]
 
     const sendPostRequest = async () => {
-        await SecureStorage.getItemAsync('token').then((token) => {
-            fetch('http://10.1.10.242:3000/api/profile/add-password', {
+        try {
+            const token = await SecureStorage.getItemAsync('token')
+            const response = await fetch('http://10.1.10.242:3000/api/profile/add-password', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     appName: appTitle,
-                    url: url,
-                    emailUsed: emailUsed,
-                    password: password,
-                    notes: notes
+                    url,
+                    emailUsed,
+                    password,
+                    notes
                 })
             })
-        })
-            .then((response) => {
-                if (response.ok) {
-                    navigation.navigate('Tabs')
-                }
-            })
-            .catch((err) => {
-                console.log('There was an error making this request.')
-                console.error(err)
-            })
+
+            if (response.ok) {
+                navigation.navigate('Tabs')
+            }
+
+        } catch (error) {
+            console.error('There was an error making this request.', error)
+            Alert.alert('Could not save password', 'Please try again.')
+        }
     }
 
     return (
@@ -172,19 +173,13 @@ export default function AddPassword() {
                                 <TextInput 
                                     placeholder={item.placeholder} 
                                     style={{flex: 1}} 
-                                    value={() => {
-                                        if (item.title == 'App Name') {
-                                            return appTitle
-                                        } else if (item.title == 'URL') {
-                                            return url
-                                        } else if (item.title == 'Email Used') {
-                                            return emailUsed
-                                        } else if (item.title == 'Password') {
-                                            return password
-                                        } else {
-                                            return
-                                        }
-                                    }}
+                                    value={
+                                        item.title == 'App Name' ? appTitle :
+                                        item.title == 'URL' ? url :
+                                        item.title == 'Email Used' ? emailUsed :
+                                        item.title == 'Password' ? password :
+                                        ''
+                                    }
                                     onChangeText={(text) => {
                                         if (item.title == 'App Name') {
                                             return setAppTitle(text)
