@@ -89,7 +89,7 @@ export default function Vault() {
                     <View style={styles.searchContainer}>
                         <View style={styles.searchInput}>
                             <Image source={require('../assets/search-icon.png')} style={{ width: 15, height: 15 }} />
-                            <TextInput placeholder='Search vault...'/>
+                            <TextInput placeholder='Search vault...' style={{flex: 1}}/>
                         </View>
                         <Pressable style={{justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 24, padding: 12 }}>
                             <Image source={require('../assets/filter-icon.png')} style={{ width: 18, height: 18 }} />
@@ -99,10 +99,13 @@ export default function Vault() {
                     <View>
                         <ScrollView>
                             {data.map((item, index) => (
-                                <View key={index} style={{ marginBottom: 12, borderRadius: 24, backgroundColor: '#FFF', padding: 16 }}>
+                                <Pressable 
+                                    key={index} 
+                                    style={{ marginBottom: 12, borderRadius: 24, backgroundColor: '#FFF', padding: 16 }}
+                                    onPress={() => {navigation.navigate('EditPassword')}}>
                                     <Text style={{ color: '#0F172A', fontSize: 16, fontWeight: 'bold' }}>{item.appName}</Text>
                                     <Text style={{ color: '#64748B', fontSize: 14 }}>{item.emailUsed}</Text>
-                                </View>
+                                </Pressable>
                             ))}
                         </ScrollView>
                         <Pressable 

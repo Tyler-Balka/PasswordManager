@@ -13,6 +13,7 @@ import Generator from './screens/Generator';
 import Security from './screens/Security';
 import Settings from './screens/Settings';
 import AddPassword from './screens/AddPassword';
+import EditPassword from './screens/EditPassword';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator()
@@ -52,6 +53,7 @@ export default function App() {
               headerShown: true, 
               headerTitle: 'Add New Password',
               presentation: 'modal'}} />
+            <Stack.Screen name='EditPassword' component={EditPassword}/>
             <Stack.Screen name='Tabs' children={() => {
               return (
                 <Tab.Navigator screenOptions={({ route }) => {

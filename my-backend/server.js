@@ -45,8 +45,10 @@ app.post('/api/sign-up', (req, res) => {
     db.query(query, [fullName, email, passwordHash], (err) => {
         if (!err) {
             console.log('Successfully inserted into the users table')
+            const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' })
             return res.status(201).json({
-                message: 'Successfully created a user'
+                message: 'Successfully created a user',
+                token
             })
         } else {
             console.log('Failed to insert user into database')
@@ -125,21 +127,36 @@ app.get('/api/profile', (req, res) => {
 // add password route
 app.post('/api/profile/add-password', (req, res) => {
     const token = req.headers.authorization?.split(' ')[1]
-    const { appName, url, emailUsed, password, notes } = req.body
     if (!token) {
-        return res.json({
+        return res.status(401).json({
             message: 'No token provided'
         })
     }
+
+    const { appName, url, emailUsed, password, notes } = req.body || {}
+    if (!appName || !url || !emailUsed || !password) {
+        return res.status(400).json({
+            message: 'App name, URL, email, and password are required'
+        })
+    }
     
+    let decode
     try {
-        const decode = jwt.verify(token, process.env.JWT_SECRET)
+        decode = jwt.verify(token, process.env.JWT_SECRET)
+    } catch (error) {
+        return res.status(401).json({
+            message: 'Invalid token'
+        })
+    }
+
+    try {
         // process for encrypting password
             // generate a random initialization vector
             const iv = crypto.randomBytes(12) 
 
             // create cipher with AES-256-GCM
-            const cipher = crypto.createCipheriv('aes-256-gcm', process.env.ENCRYPTION_KEY, iv)
+            const encryptionKey = Buffer.from(process.env.ENCRYPTION_KEY, 'hex')
+            const cipher = crypto.createCipheriv('aes-256-gcm', encryptionKey, iv)
 
             // encrypt password
             let encrypted = cipher.update(password, 'utf-8', 'hex')
@@ -148,20 +165,21 @@ app.post('/api/profile/add-password', (req, res) => {
         // execute database query to store password
         const query = `INSERT INTO stored_passwords(app_name, url, email_used, encrypted_password, password_notes, iv, email_address)
                             VALUES (?, ?, ?, ?, ?, ?, ?)`
-        db.query(query, [appName, url, emailUsed, encrypted, notes, iv, decode.email], (err, result) => {
+        db.query(query, [appName, url, emailUsed, encrypted, notes, iv.toString('hex'), decode.email], (err, result) => {
             if (!err) {
                 res.status(201).json({
                     message: 'Successfully inserted values into database',
                 })
             } else {
                 return res.status(500).json({
-                    message: "Couldn't insert values into database, sorry."
+                    message: "Couldn't insert values into database, sorry.",
+                    error: err.message
                 })
             }
         })
     } catch(error) {
-        res.status(401).json({
-            message: 'Invalid token',
+        res.status(500).json({
+            message: 'Failed to encrypt password',
             err: error.message
         })
     }
@@ -187,10 +205,12 @@ app.get('/api/profile/retrieve', (req, res) => {
                 if (!err) {
                     return res.status(200).json({
                         message: 'Successfully retrieved passwords.',
-                        data: {
-                            appName: result[0].app_name,
-                            emailUsed: result[0].email_used
-                        }
+                        data: result.map((row) => {
+                            return {
+                                appName: row.app_name,
+                                emailUsed: row.email_used
+                            }
+                        })
                     })
                 } else {
                     res.status(500).json({
@@ -203,6 +223,54 @@ app.get('/api/profile/retrieve', (req, res) => {
             res.status(401).json({
                 message: 'Invalid token',
                 err: error.message
+            })
+        }
+    }
+})
+
+// retrieve full password information
+app.get('/api/profile/retrieve-full', (req, res) => {
+    const token = req.headers.authorization.split(' ')[1]
+    if (!token) {
+        res.json({
+            message: 'No token provided. Please provide a token.'
+        })
+    } else {
+        try {
+            const decode = jwt.verify(token, process.env.JWT_SECRET)
+            const query = `SELECT app_name, url, email_used, encrypted_password, iv FROM stored_passwords 
+                            JOIN users ON stored_passwords.email_address = users.email_address 
+                            WHERE users.email_address = ?`
+            db.query(query, [decode.email], (err, result) => {
+                if (!err) {
+                    const key = Buffer.from(process.env.encryptionKey, 'hex')
+                    const iv = result[0].iv
+                    const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv)
+
+                    let decrypted_password = decipher.update(result[0].encrypted_password, 'hex', 'utf-8')
+                    decrypted_password += decipher.final('utf-8')
+
+                    res.status(200).json({
+                        message: "Successfully retrieved user's password information",
+                        data: result.map((row) => {
+                            return {
+                                appName: row.app_name,
+                                emailUsed: row.email_used,
+                                url: row.url,
+                                password: decrypted_password
+                            }
+                        })
+                    })
+                } else {
+                    res.status(500).json({
+                        message: 'There was a problem retrieving items from the database.'
+                    })
+                }
+            })
+
+        } catch(error) {
+            res.status(401).json({
+                message: `Invalid token. ${error}`
             })
         }
     }
